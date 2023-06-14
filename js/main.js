@@ -46,7 +46,7 @@ BABYLON.SceneLoader.ImportMesh("", "assets/", "amogus.stl", scene, function (mes
 
 // character properties
 var isJumping = false;
-var jumpPower = 0.2;
+var jumpPower = 0.4;
 var gravity = -0.01;
 var jumpPosition = 0;
 var verticalSpeed = 0;
@@ -110,8 +110,8 @@ engine.runRenderLoop(function () {
         character.position.y += verticalSpeed; 
         verticalSpeed += gravity; 
 
-        if (character.position.y < ground.position.y + character.scaling.y * 2) {
-            character.position.y = ground.position.y + character.scaling.y * 2;
+        if (character.position.y < ground.position.y + character.scaling.y * 2.4) {
+            character.position.y = ground.position.y + character.scaling.y * 2.4;
             verticalSpeed = 0;
         }
     }
