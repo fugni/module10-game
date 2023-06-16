@@ -8,13 +8,12 @@ var createScene = function () {
     var scene = new BABYLON.Scene(engine);
 
     // camera
-    var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 20, -100), scene);
-    camera.setTarget(BABYLON.Vector3.Zero());
+    var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 20, -100), scene);
     camera.attachControl(canvas, true);
 
     // light
     var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
-    light.intensity = 0.7;
+    light.intensity = 0.8;
 
     // ground
     var ground = BABYLON.MeshBuilder.CreateGround("ground", { width: 150, height: 150 }, scene);
