@@ -1,0 +1,11 @@
+Model Information:
+* title:	Countach stylized (low-fi)
+* source:	https://sketchfab.com/3d-models/countach-stylized-low-fi-4ddb92a0bf4644e98712fbe62c7c373f
+* author:	C. Artee (https://sketchfab.com/C_artee)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Countach stylized (low-fi)" (https://sketchfab.com/3d-models/countach-stylized-low-fi-4ddb92a0bf4644e98712fbe62c7c373f) by C. Artee (https://sketchfab.com/C_artee) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
