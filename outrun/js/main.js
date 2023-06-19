@@ -8,15 +8,19 @@ var createScene = function () {
 var scene = new BABYLON.Scene(engine);
 
 // camera
-var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 10, -20), scene);
+var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -20), scene);
 camera.attachControl(canvas, false);
+var cameraPositionOffset = new BABYLON.Vector3(0, 7.5, -25);
 
 // light
 var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 light.intensity = 0.7;
 
 // grid
-var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 80, height: 80}, scene);
+var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 80, height: 1000}, scene);
+var startingPosition = ground._height / 2 - 50;
+ground.position.z = startingPosition
+
 
 var groundMaterial = new BABYLON.GridMaterial("groundMaterial");
 groundMaterial.gridRatio = 2;
@@ -33,14 +37,15 @@ BABYLON.SceneLoader.ImportMesh("", "./assets/countach_stylized_low-fi/", "scene.
     countach = scene[0];
     
     countach.scaling = new BABYLON.Vector3(10, 10, 10);
-    countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0); // Example rotation
+    countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0);
+
 });
 
 // shitty fix to make code not run before car is loaded
 var characterIsLoaded = false;
 setTimeout(() => {
     characterIsLoaded = true;
-}, 30);
+}, 100);
 
 var inputMap = {};
 scene.onKeyboardObservable.add((kbInfo) => {
@@ -53,28 +58,29 @@ scene.onKeyboardObservable.add((kbInfo) => {
 
 engine.runRenderLoop(function () {
     if (inputMap["w"]) {
-        countach.position.z += 0.1;
+        ground.position.z -= 0.5;
         // countach.rotation.y = Math.PI / -2;
     }
     if (inputMap["a"]) {
-        countach.position.x -= 0.1;
+        ground.position.x += 0.1;
         // countach.rotation.y = Math.PI;
     }
     if (inputMap["s"]) {
-        countach.position.z -= 0.1;
+        ground.position.z += 0.25;
         // countach.rotation.y = Math.PI / 2;
     }
     if (inputMap["d"]) {
-        countach.position.x += 0.1;
+        ground.position.x -= 0.1;
         // countach.rotation.y = Math.PI * 2;
     }
     if (characterIsLoaded) {
-        camera.position.copyFrom(countach.position);
-        // camera.setTarget(countach.position);
+        camera.setTarget(countach.position);
+        camera.position = countach.position.add(cameraPositionOffset);
+    }
+    if (ground.position.z <= startingPosition - 40) {
+        ground.position.z = startingPosition;
     }
 }) 
-
-
 
 return scene;
 };
