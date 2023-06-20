@@ -22,7 +22,7 @@ var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 80, height: 1000
 var startingPosition = ground._height / 2 - 50;
 ground.position.z = startingPosition
 
-
+// material of my lovely ground
 var groundMaterial = new BABYLON.GridMaterial("groundMaterial");
 groundMaterial.gridRatio = 2;
 groundMaterial.backFaceCulling = false;
@@ -41,12 +41,12 @@ BABYLON.SceneLoader.ImportMesh("", "./assets/countach_stylized_low-fi/", "scene.
     countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0);
 });
 
+// car variables
 var velocity = 0;
 var acceleration = 0.01;
-var deceleration = -0.005;
-var brake = -0.02;
+var deceleration = 0.005;
+var brake = 0.02;
 var maxVelocity = 1.5;
-
 
 // shitty fix to make code not run before car is loaded
 var characterIsLoaded = false;
@@ -56,6 +56,7 @@ setTimeout(() => {
     console.log(countach.position);
 }, 100);
 
+// input detection
 var inputMap = {};
 scene.onKeyboardObservable.add((kbInfo) => {
     if (kbInfo.type == BABYLON.KeyboardEventTypes.KEYDOWN) {
@@ -71,7 +72,7 @@ engine.runRenderLoop(function () {
         velocity = Math.min(velocity + acceleration, maxVelocity);
         ground.position.z -= velocity;
     }   else {
-        velocity = Math.max(velocity + deceleration, 0);
+        velocity = Math.max(velocity - deceleration, 0);
         ground.position.z -= velocity;
     }
     // steer left
@@ -80,7 +81,7 @@ engine.runRenderLoop(function () {
     }
     // brake
     if (inputMap["s"]) {
-        velocity = Math.max(velocity + brake, 0);
+        velocity = Math.max(velocity - brake, 0);
         ground.position.z -= velocity;
     }
     // steer right
@@ -94,6 +95,7 @@ engine.runRenderLoop(function () {
         camera.position = countach.position.add(cameraPositionOffset);
     }
     
+    // ground tps back every 40 units to fake infinite road
     if (ground.position.z <= startingPosition - 40) {
         ground.position.z = startingPosition;
     }
