@@ -10,6 +10,7 @@ var scene = new BABYLON.Scene(engine);
 // camera
 var camera = new BABYLON.FreeCamera("camera", new BABYLON.Vector3(0, 0, -20), scene);
 camera.attachControl(canvas, false);
+// distance from car
 var cameraPositionOffset = new BABYLON.Vector3(0, 7.5, -25);
 
 // light
@@ -38,45 +39,61 @@ BABYLON.SceneLoader.ImportMesh("", "./assets/countach_stylized_low-fi/", "scene.
     
     countach.scaling = new BABYLON.Vector3(10, 10, 10);
     countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0);
-
 });
+
+var velocity = 0;
+var acceleration = 0.01;
+var deceleration = -0.005;
+var brake = -0.02;
+var maxVelocity = 1.5;
+
 
 // shitty fix to make code not run before car is loaded
 var characterIsLoaded = false;
 setTimeout(() => {
     characterIsLoaded = true;
+    console.log(countach);
+    console.log(countach.position);
 }, 100);
 
 var inputMap = {};
 scene.onKeyboardObservable.add((kbInfo) => {
     if (kbInfo.type == BABYLON.KeyboardEventTypes.KEYDOWN) {
-        inputMap[kbInfo.event.key] = kbInfo.event.type == "keydown";
+        inputMap[kbInfo.event.key.toLowerCase()] = kbInfo.event.type == "keydown";
     } else if (kbInfo.type == BABYLON.KeyboardEventTypes.KEYUP) {
-        inputMap[kbInfo.event.key] = kbInfo.event.type == "keydown";
+        inputMap[kbInfo.event.key.toLowerCase()] = kbInfo.event.type == "keydown";
     }
 })
 
 engine.runRenderLoop(function () {
+    // accelerate
     if (inputMap["w"]) {
-        ground.position.z -= 0.5;
-        // countach.rotation.y = Math.PI / -2;
+        velocity = Math.min(velocity + acceleration, maxVelocity);
+        ground.position.z -= velocity;
+    }   else {
+        velocity = Math.max(velocity + deceleration, 0);
+        ground.position.z -= velocity;
     }
+    // steer left
     if (inputMap["a"]) {
         ground.position.x += 0.1;
-        // countach.rotation.y = Math.PI;
     }
+    // brake
     if (inputMap["s"]) {
-        ground.position.z += 0.25;
-        // countach.rotation.y = Math.PI / 2;
+        velocity = Math.max(velocity + brake, 0);
+        ground.position.z -= velocity;
     }
+    // steer right
     if (inputMap["d"]) {
         ground.position.x -= 0.1;
-        // countach.rotation.y = Math.PI * 2;
     }
+
+    // camera follows car
     if (characterIsLoaded) {
         camera.setTarget(countach.position);
         camera.position = countach.position.add(cameraPositionOffset);
     }
+    
     if (ground.position.z <= startingPosition - 40) {
         ground.position.z = startingPosition;
     }

@@ -1,7 +1,7 @@
 # todo
 
 ### gameplay
-* actual acceleration and braking
+* improved turning
 * scoring
 
 ### pretty
