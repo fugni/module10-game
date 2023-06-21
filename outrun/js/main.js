@@ -25,7 +25,7 @@ ground.position.z = startingPosition
 // material of my lovely ground
 var groundMaterial = new BABYLON.GridMaterial("groundMaterial");
 groundMaterial.gridRatio = 2;
-groundMaterial.backFaceCulling = false;
+groundMaterial.backFaceCulling = true;
 groundMaterial.mainColor = new BABYLON.Color3(1, 1, 1);
 groundMaterial.lineColor = new BABYLON.Color3(1.0, 1.0, 1.0);
 groundMaterial.opacity = 0.98;
@@ -47,10 +47,10 @@ var velocity = 0;
 var acceleration = 0.01;
 var deceleration = 0.005;
 var brake = 0.02;
-var maxVelocity = 1.5;
+var maxVelocity = 2;
 var turnVelocity = 0.15;
 var baseRotation = Math.PI / -2;
-var turnRotation = 0.1;
+var turnRotation = 0.2;
 
 // shitty fix to make code not run before car is loaded
 var characterIsLoaded = false;
@@ -86,16 +86,12 @@ engine.runRenderLoop(function () {
     // steer left
     if (inputMap["a"]) {
         ground.position.x += velocity * turnVelocity;
-        if (countach.rotation.y >= baseRotation - turnRotation) {
-            countach.rotation.y -= turnRotation;
-        }
+        countach.rotation.y = baseRotation - turnRotation;
     }
     // steer right
     if (inputMap["d"]) {
         ground.position.x -= velocity * turnVelocity;
-        if (countach.rotation.y <= baseRotation + turnRotation) {
-            countach.rotation.y += turnRotation;
-        }
+        countach.rotation.y = baseRotation + turnRotation;
     }
 
 
