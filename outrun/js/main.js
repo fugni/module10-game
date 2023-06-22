@@ -39,7 +39,6 @@ BABYLON.SceneLoader.ImportMesh("", "./assets/countach_stylized_low-fi/", "scene.
     
     countach.scaling = new BABYLON.Vector3(10, 10, 10);
     countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0);
-
 });
 
 // car variables
@@ -103,6 +102,10 @@ engine.runRenderLoop(function () {
         if (!inputMap["a"] && !inputMap["d"]) {
             countach.rotation.y = baseRotation
         }
+        if (inputMap["a"] && inputMap["d"]) {
+            countach.rotation.y = baseRotation
+        }
+
     }
     
     // ground tps back every 40 units to fake infinite road
