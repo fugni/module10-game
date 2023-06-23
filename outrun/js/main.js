@@ -39,7 +39,6 @@ BABYLON.SceneLoader.ImportMesh("", "./assets/countach_stylized_low-fi/", "scene.
     
     countach.scaling = new BABYLON.Vector3(10, 10, 10);
     countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0);
-    console.log(countach);
 });
 
 // car variables
@@ -47,10 +46,10 @@ var velocity = 0;
 var acceleration = 0.01;
 var deceleration = 0.005;
 var brake = 0.02;
-var maxVelocity = 2;
+var maxVelocity = 5;
 var turnVelocity = 0.15;
 var baseRotation = Math.PI / -2;
-var turnRotation = 0.2;
+var turnRotation = 0.15;
 var distanceFromWall = 4;
 
 // shitty fix to make code not run before car is loaded
@@ -58,6 +57,17 @@ var characterIsLoaded = false;
 setTimeout(() => {
     characterIsLoaded = true;
 }, 100);
+
+// gui
+var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+
+var text1 = new BABYLON.GUI.TextBlock();
+text1.text = "Hello world";
+text1.color = "white";
+text1.fontSize = 48;
+text1.top = "40%"
+text1.left = "-40%";
+advancedTexture.addControl(text1);
 
 // input detection
 var inputMap = {};
@@ -72,7 +82,12 @@ scene.onKeyboardObservable.add((kbInfo) => {
 engine.runRenderLoop(function () {
     // accelerate
     if (inputMap["w"]) {
-        velocity = Math.min(velocity + acceleration, maxVelocity);
+        if (velocity == maxVelocity) {
+            velocity = Math.min(velocity + acceleration - Math.round(Math.random() * 2) / 60, maxVelocity + 1 / 6);
+        } else {
+            velocity = Math.min(velocity + acceleration, maxVelocity)
+        }
+
         ground.position.z -= velocity;
     }   else {
         velocity = Math.max(velocity - deceleration, 0);
@@ -85,9 +100,9 @@ engine.runRenderLoop(function () {
     }
     
     // steer left
-    if (inputMap["a"] && !inputMap["d"]) {
+    if (inputMap["a"]) {
         if (countach.position.x <= ground._width / -2 + distanceFromWall) {
-            velocity = Math.max(velocity - deceleration * 2.5, 0);
+            velocity = Math.max(velocity - deceleration * 5, 0);
             ground.position.z -= velocity;
         } else {
             countach.position.x -= velocity * turnVelocity;
@@ -96,9 +111,9 @@ engine.runRenderLoop(function () {
         countach.rotation.y = baseRotation - turnRotation;
     }
     // steer right
-    if (inputMap["d"] && !inputMap["a"]) {
+    if (inputMap["d"]) {
         if (countach.position.x >= ground._width / 2 - distanceFromWall) {
-            velocity = Math.max(velocity - deceleration * 2.5, 0);
+            velocity = Math.max(velocity - deceleration * 5, 0);
             ground.position.z -= velocity;
         } else {
             countach.position.x += velocity * turnVelocity;
@@ -115,12 +130,18 @@ engine.runRenderLoop(function () {
         if (!inputMap["a"] && !inputMap["d"]) {
             countach.rotation.y = baseRotation
         }
+        if (inputMap["a"] && inputMap["d"]) {
+            countach.rotation.y = baseRotation
+        }
     }
     
     // ground tps back every 40 units to fake infinite road
     if (ground.position.z <= startingPosition - 40) {
         ground.position.z = startingPosition;
     }
+
+    text1.text = Math.round(velocity * 60);
+
 }) 
 
 return scene;
