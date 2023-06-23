@@ -39,6 +39,7 @@ BABYLON.SceneLoader.ImportMesh("", "./assets/countach_stylized_low-fi/", "scene.
     
     countach.scaling = new BABYLON.Vector3(10, 10, 10);
     countach.rotation = new BABYLON.Vector3(0, Math.PI / -2, 0);
+    console.log(countach);
 });
 
 // car variables
@@ -50,6 +51,7 @@ var maxVelocity = 2;
 var turnVelocity = 0.15;
 var baseRotation = Math.PI / -2;
 var turnRotation = 0.2;
+var distanceFromWall = 4;
 
 // shitty fix to make code not run before car is loaded
 var characterIsLoaded = false;
@@ -83,16 +85,27 @@ engine.runRenderLoop(function () {
     }
     
     // steer left
-    if (inputMap["a"]) {
-        ground.position.x += velocity * turnVelocity;
+    if (inputMap["a"] && !inputMap["d"]) {
+        if (countach.position.x <= ground._width / -2 + distanceFromWall) {
+            velocity = Math.max(velocity - deceleration * 2.5, 0);
+            ground.position.z -= velocity;
+        } else {
+            countach.position.x -= velocity * turnVelocity;
+        }
+
         countach.rotation.y = baseRotation - turnRotation;
     }
     // steer right
-    if (inputMap["d"]) {
-        ground.position.x -= velocity * turnVelocity;
+    if (inputMap["d"] && !inputMap["a"]) {
+        if (countach.position.x >= ground._width / 2 - distanceFromWall) {
+            velocity = Math.max(velocity - deceleration * 2.5, 0);
+            ground.position.z -= velocity;
+        } else {
+            countach.position.x += velocity * turnVelocity;
+        }
+
         countach.rotation.y = baseRotation + turnRotation;
     }
-
 
     // camera follows car
     if (characterIsLoaded) {
@@ -102,10 +115,6 @@ engine.runRenderLoop(function () {
         if (!inputMap["a"] && !inputMap["d"]) {
             countach.rotation.y = baseRotation
         }
-        if (inputMap["a"] && inputMap["d"]) {
-            countach.rotation.y = baseRotation
-        }
-
     }
     
     // ground tps back every 40 units to fake infinite road
