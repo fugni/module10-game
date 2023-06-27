@@ -61,13 +61,13 @@ setTimeout(() => {
 // gui
 var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-var speedometer= new BABYLON.GUI.TextBlock();
+var speedometer = new BABYLON.GUI.TextBlock();
 speedometer.text = "";
 speedometer.color = "white";
 speedometer.fontSize = 64;
 speedometer.top = "40%"
 speedometer.left = "-40%";
-advancedTexture.addControl( speedometer);
+advancedTexture.addControl(speedometer);
 
 // input detection
 var inputMap = {};
@@ -80,32 +80,34 @@ scene.onKeyboardObservable.add((kbInfo) => {
 })
 
 engine.runRenderLoop(function () {
+    var delta = scene.getAnimationRatio();
+
     // accelerate
     if (inputMap["w"]) {
         if (velocity == maxVelocity) {
             velocity = Math.min(velocity + acceleration - Math.round(Math.random() * 2) / 60, maxVelocity + 1 / 6);
         } else {
-            velocity = Math.min(velocity + acceleration, maxVelocity)
+            velocity = Math.min(velocity + acceleration, maxVelocity);
         }
 
-        ground.position.z -= velocity;
+        ground.position.z -= velocity * delta;
     }   else {
         velocity = Math.max(velocity - deceleration, 0);
-        ground.position.z -= velocity;
+        ground.position.z -= velocity * delta;
     }
     // brake
     if (inputMap["s"]) {
         velocity = Math.max(velocity - brake, 0);
-        ground.position.z -= velocity;
+        ground.position.z -= velocity * delta;
     }
     
     // steer left
     if (inputMap["a"]) {
         if (countach.position.x <= ground._width / -2 + distanceFromWall) {
             velocity = Math.max(velocity - deceleration * 5, 0);
-            ground.position.z -= velocity;
+            ground.position.z -= velocity * delta;
         } else {
-            countach.position.x -= velocity * turnVelocity;
+            ground.position.x += velocity * turnVelocity * delta;
         }
 
         countach.rotation.y = baseRotation - turnRotation;
@@ -114,9 +116,9 @@ engine.runRenderLoop(function () {
     if (inputMap["d"]) {
         if (countach.position.x >= ground._width / 2 - distanceFromWall) {
             velocity = Math.max(velocity - deceleration * 5, 0);
-            ground.position.z -= velocity;
+            ground.position.z -= velocity * delta;
         } else {
-            countach.position.x += velocity * turnVelocity;
+            ground.position.x -= velocity * turnVelocity * delta;
         }
 
         countach.rotation.y = baseRotation + turnRotation;
@@ -128,10 +130,10 @@ engine.runRenderLoop(function () {
         camera.position = countach.position.add(cameraPositionOffset);
 
         if (!inputMap["a"] && !inputMap["d"]) {
-            countach.rotation.y = baseRotation
+            countach.rotation.y = baseRotation;
         }
         if (inputMap["a"] && inputMap["d"]) {
-            countach.rotation.y = baseRotation
+            countach.rotation.y = baseRotation;
         }
     }
     
@@ -141,7 +143,6 @@ engine.runRenderLoop(function () {
     }
 
     speedometer.text = Math.round(velocity * 60);
-
 }) 
 
 return scene;
