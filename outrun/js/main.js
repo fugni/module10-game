@@ -47,7 +47,7 @@ var acceleration = 0.01;
 var deceleration = 0.005;
 var brake = 0.02;
 var maxVelocity = 5;
-var turnVelocity = 0.15;
+var turnVelocity = 0.17;
 var baseRotation = Math.PI / -2;
 var turnRotation = 0.15;
 var distanceFromWall = 4;
@@ -103,18 +103,17 @@ engine.runRenderLoop(function () {
     
     // steer left
     if (inputMap["a"]) {
-        if (countach.position.x <= ground._width / -2 + distanceFromWall) {
+        if (ground.position.x >= ground._width / 2 - distanceFromWall) {
             velocity = Math.max(velocity - deceleration * 5, 0);
             ground.position.z -= velocity * delta;
         } else {
             ground.position.x += velocity * turnVelocity * delta;
         }
-
         countach.rotation.y = baseRotation - turnRotation;
     }
     // steer right
     if (inputMap["d"]) {
-        if (countach.position.x >= ground._width / 2 - distanceFromWall) {
+        if (ground.position.x <= ground._width / -2 + distanceFromWall) {
             velocity = Math.max(velocity - deceleration * 5, 0);
             ground.position.z -= velocity * delta;
         } else {
