@@ -61,13 +61,13 @@ setTimeout(() => {
 // gui
 var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
 
-var text1 = new BABYLON.GUI.TextBlock();
-text1.text = "Hello world";
-text1.color = "white";
-text1.fontSize = 48;
-text1.top = "40%"
-text1.left = "-40%";
-advancedTexture.addControl(text1);
+var speedometer= new BABYLON.GUI.TextBlock();
+speedometer.text = "";
+speedometer.color = "white";
+speedometer.fontSize = 64;
+speedometer.top = "40%"
+speedometer.left = "-40%";
+advancedTexture.addControl( speedometer);
 
 // input detection
 var inputMap = {};
@@ -140,7 +140,7 @@ engine.runRenderLoop(function () {
         ground.position.z = startingPosition;
     }
 
-    text1.text = Math.round(velocity * 60);
+    speedometer.text = Math.round(velocity * 60);
 
 }) 
 
