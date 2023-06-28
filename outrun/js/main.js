@@ -56,18 +56,31 @@ var createScene = function () {
     var characterIsLoaded = false;
     setTimeout(() => {
         characterIsLoaded = true;
-    }, 100);
+    }, 500);
 
     // gui
     var advancedTexture = BABYLON.GUI.AdvancedDynamicTexture.CreateFullscreenUI("UI");
+    var font = "./assets/public-pixel-font/PublicPixel.ttf";
 
+    // speedometer
     var speedometer = new BABYLON.GUI.TextBlock();
-    speedometer.text = "";
     speedometer.color = "white";
+    speedometer.fontFamily = "PublicPixel";
     speedometer.fontSize = 64;
     speedometer.top = "40%"
     speedometer.left = "-40%";
     advancedTexture.addControl(speedometer);
+
+    // scoreboard
+    var score = 0;
+    var scoreboard = new BABYLON.GUI.TextBlock();
+    scoreboard.color = "white";
+    scoreboard.fontFamily = "PublicPixel";
+    scoreboard.fontSize = 52;
+    scoreboard.top = "-40%";
+    scoreboard.left = "40%";
+    advancedTexture.addControl(scoreboard);
+    
 
     // input detection
     var inputMap = {};
@@ -142,6 +155,9 @@ var createScene = function () {
         }
 
         speedometer.text = Math.round(velocity * 60);
+
+        score += Math.round(velocity * delta);
+        scoreboard.text = score;
     })
 
     return scene;
